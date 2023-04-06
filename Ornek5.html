@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <title>Kullanıcılar Listesi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 </head>
 <body>
@@ -27,22 +26,23 @@
 
         <div class="row">
             <div class="col-12 col-md-6">
-                <input type="email" placeholder="Email..." class="form-control" id="txtEmail" /><br />
+                <input type="email" placeholder="Email..." class="form-control" id="txtEmail" /> <br />
             </div>
             <div class="col-12 col-md-6">
-                <input type="date" class="form-control" id="dogumtrh" /><br />
+                <input type="date" class="form-control" id="dogumtrh" /> <br />
             </div>
         </div>
 
 
         <div class="row">
-            <div class="col-12 col-md-6" style="margin-bottom:10px">
+            <div class="col-12 col-md-6">
                 <input class="btn btn-primary container"
-                       type="button" value="EKLE" id="btnEkle" /> <br />
+                       style="margin-bottom:10px"
+                       type="button" value="EKLE" id="btnEkle" /><br />
             </div>
-
-            <div class="col-12 col-md-6" style="margin-bottom:10px">
-                <input class="btn btn-default container" style="background-color:orange;color:white;"
+            <div class="col-12 col-md-6">
+                <input class="btn btn-default container"
+                       style="background-color:orange;color:white;margin-bottom:10px"
                        type="button" value="TEMİZLE" id="btnTemizle" /> <br />
             </div>
 
@@ -52,7 +52,7 @@
         <div class="row">
             <div class="col-4 offset-4">
                 <input type="text" placeholder="Kişi ara..." class="form-control"
-                       id="txtAra" />
+                       id="txtAra" /><br />
             </div>
         </div>
 
@@ -64,25 +64,38 @@
 
 
     <script>
-
-        //$(document).ready(() => {
-        //    alert("berk")
-        //}); // document ready bitti
-
+        var kullanicilar = [];
         $(document).ready(function () {
-            var kullanicilar = [];
-            $("#btnEkle").click(function () {
 
+            var bugun = new Date();
+            var ay = bugun.getMonth() + 1;
+            var gun = bugun.getDate();
+            if (gun < 10) {
+                gun = '0' + gun;
+            }
+            if (ay < 10) {
+                ay = '0' + ay;
+            }
+            var maxtrh = bugun.getFullYear() + "-" + ay + "-" + gun;
+
+            //document.getElementById("dogumtrh").setAttribute("max", maxtrh);
+            //document.getElementById("dogumtrh").value = maxtrh;
+            $("#dogumtrh").attr("max", maxtrh);
+            $("#dogumtrh").val(maxtrh);
+
+
+
+            $("#btnEkle").click(function () {
                 var $ad = $("#txtAd");
                 var $soyad = $("#txtSoyad");
-                var $email = $("#txtEmail");
+                var $email = $('#txtEmail');
 
                 if ($ad.val() == null || $ad.val().length == 0 ||
                     $soyad.val() == null || $soyad.val().length == 0 ||
                     $email.val() == null || $email.val().length == 0) {
                     alert("Gerekli alanlar girilmelidir!")
                     return;
-                } // if bitti
+                } //if bitti
 
                 var yeniKullanici = {
                     ad: $ad.val(),
@@ -90,133 +103,139 @@
                     email: $email.val(),
                     dtrh: null
                 };
+
                 if ($("#dogumtrh").val().length > 0) {
                     yeniKullanici.dtrh = $("#dogumtrh").val();
                 }
 
+
                 var kullanicidanVarMi = false;
-                //for (var i = 0; i < kullanicilar.length; i++) {
+
+                for (var i = 0; i < kullanicilar.length; i++) {
+
+                    if (kullanicilar[i].email.toLowerCase() == yeniKullanici.email.toLowerCase()) {
+                        kullanicidanVarMi = true;
+                        alert("Aynı emaile ait bir kullanıcı mevcut")
+                        return;
+                    }
+                } // for bitti
+
+                //for (i in kullanicilar) {
 
                 //    if (kullanicilar[i].email.toLowerCase() == yeniKullanici.email.toLowerCase()) {
                 //        kullanicidanVarMi = true;
                 //        alert("Aynı emailden zaten sistemde kayıtlıdır")
                 //        return;
                 //    }
-                //}
+                //} // for bitti
 
-                for (i in kullanicilar) {
-
-                    if (kullanicilar[i].email.toLowerCase() == yeniKullanici.email.toLowerCase()) {
-                        kullanicidanVarMi = true;
-                        alert("Aynı emailden zaten sistemde kayıtlıdır")
-                        return;
-                    }
-                } // for bitti
                 if (!kullanicidanVarMi) {
                     kullanicilar.push(yeniKullanici);
-                    alert("Yeni kullanıcı eklendi");
-                    //temizlik
+                    alert("Yeni kullanıcı eklendi")
+                    // temizlik
                     $ad.val('');
                     $soyad.val('');
                     $email.val('');
                 } // if bitti
 
-                console.log(kullanicilar);
                 KullanicilariGetir();
+
             }); // btn ekle bitti
 
-
-
-
             $("#btnTemizle").click(function () {
-                alert("temizle tıkladı")
+                alert("Temizle tıklandı")
             });
 
-            function KullanicilariGetir() {
-                $("#kisiDiv").html('');
-                var toplam = 0;
-                if (kullanicilar.length == 0) {
-                    return;
-                }
 
-                var tabloHtml = "<table class='table table-hover' style='text-align:center'>"
-                tabloHtml +=
-                    "<tr><th>İsim</th>" +
-                    "<th>Soyisim</th>" +
-                    "<th>Email</th>" +
-                    "<th>Doğum Tarihi</th>" +
-                    "<th>İşlemler</th></tr>";
-                tabloHtml += "<tbody>";
-
-                for (i in kullanicilar) {
-
-                    tabloHtml += "<tr>" +
-                        "<td>" + kullanicilar[i].ad.substring(0, 1).toUpperCase()
-                        + kullanicilar[i].ad.substring(1).toLowerCase()
-                        + "</td>" +
-
-                        "<td>" + kullanicilar[i].soyad.toUpperCase() + "</td>" +
-                        "<td>" + kullanicilar[i].email + "</td>";
-
-                    if (kullanicilar[i].dtrh != null) {
-                        var d = new Date(kullanicilar[i].dtrh);
-                        tabloHtml +=
-                            "<td>" + d.getDate() + "/" + (d.getMonth() + 1)
-                            + "/" + d.getFullYear() + "</td>";
-                    }
-                    else {
-                        tabloHtml += "<td> ---- </td>";
-                    }
-                    tabloHtml +=
-                        "<td><input type='button' class='btn btn-danger btn-sm' value='SİL' onclick = 'KullaniciSil(" +
-                        kullanicilar[i].email + ")'/></td>";
-
-                    tabloHtml += "</tr>";
-
-                } // for bitti
-                tabloHtml += "</tbody></table>";
-                $("#kisiDiv").html(tabloHtml);
-            } // KullanicilariGetir fonk. bitti
 
             //$("#txtAra").keyup(function () {
 
             //});
 
+            $("#txtAra").on("keyup", function () {
+                var aranan = $(this).val().toLowerCase();
+                $("table td").filter(function () {
+                    var sonuc = $(this).text().toLowerCase().indexOf(aranan);
+                    console.log(sonuc);
+                    $(this).toggle(sonuc > -1);
+                }); // filter bitti
 
-            //$("#txtAra").on("keyup", function () {
-            //    var aranan = $(this).val().toLowerCase();
+            }); // keyup bitti
+
+            $(this).keydown(function (e) {
+
+                if (e.key == "Enter" &&
+                    e.target.nodeName != "txtAra" &&
+                    e.target.id != "btnTemizle" &&
+                    e.target.defaultValue != "EKLE" &&
+                    e.target.defaultValue != "SİL") {
+                    $("#btnEkle").trigger("click");
+                }
+            });
+
+            //$("#txtAra").on("keyup", function (e) {
+            //    if (e.key == "Enter" e.target.nodeName == "BODY") {
+            //        var aranan = $(this).val().toLowerCase();
             //    $("table tr").filter(function () {
             //        var sonuc = $(this).text().toLowerCase().indexOf(aranan);
             //        console.log(sonuc);
             //        $(this).toggle(sonuc > -1);
             //    }); // filter bitti
-
+            //    }
             //}); // keyup bitti
 
 
-            $("#txtAra").on("keyup", function (e) {
-                console.log(e);
-                if (e.key == "Enter" && e.target.nodeName == "INPUT") {
-                    var aranan = $(this).val().toLowerCase();
-                    $("table tr").filter(function () {
-                        var sonuc = $(this).text().toLowerCase().indexOf(aranan);
-                        console.log(sonuc);
-                        $(this).toggle(sonuc > -1);
-                    }); // filter bitti
-                }
-
-
-            }); // keyup bitti
-
-            $(this).keyup(function (e) {
-                console.log("sayfa");
-                console.log(e);
-                if (e.key == "Enter" && e.target.nodeName == "BODY") {
-                    $("#btnEkle").trigger("click");
-                }
-            });
         }); // document ready bitti
 
+        function KullanicilariGetir() {
+            $("#kisiDiv").html('');
+            var toplam = 0;
+            if (kullanicilar.length == 0) {
+                return;
+            }
+
+            var tabloHtml = "<table class = 'table table-hover' style='text-align:center'>";
+            tabloHtml += "<tr><th>İsim</th>" +
+                "<th>Soyisim</th>" +
+                "<th>Email</th>" +
+                "<th>Doğum Tarihi</th>" +
+                "<th>İşlemler</th></tr>";
+            tabloHtml += "<tbody>";
+
+            for (i in kullanicilar) {
+                tabloHtml += "<tr>" +
+                    "<td>" + kullanicilar[i].ad.substring(0, 1).toUpperCase() +
+                    kullanicilar[i].ad.substring(1) + "</td>" +
+                    "<td>" + kullanicilar[i].soyad.toUpperCase() + "</td>" +
+                    "<td>" + kullanicilar[i].email + "</td>";
+                if (kullanicilar[i].dtrh != null) {
+                    var d = new Date(kullanicilar[i].dtrh);
+                    tabloHtml +=
+                        "<td>" + d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear() + "</td>";
+                }
+                else {
+                    tabloHtml += "<td> ---- </td>";
+                }
+                tabloHtml +=
+                    "<td><input type='button' class='btn btn-danger btn sm' value='SİL' onclick=KullaniciSil('" + kullanicilar[i].email + "') /></td>";
+
+                tabloHtml += "</tr>";
+            } //for bitti
+
+            tabloHtml += "</tbody></table>";
+            $("#kisiDiv").html(tabloHtml);
+
+        } // KullanicilariGetir fonk. bitti
+
+        function KullaniciSil(email) {
+            for (i in kullanicilar) {
+                if (email.toLowerCase() == kullanicilar[i].email.toLowerCase()) {
+                    kullanicilar.splice(i, 1);
+                    break;
+                }
+            } // for bitti
+            KullanicilariGetir();
+        } //KullaniciSil fonk. bitti
 
     </script>
 
