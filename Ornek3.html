@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+
+<html lang="tr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Buton Tıklama Renk Örneği</title>
+
+    <link href="Ornek3.css" rel="stylesheet" />
+</head>
+<body>
+    <h3>Butonlara tıklayınca renkleri diğerine aktarsın</h3>
+    <input type="button" value="Buton1" id="btn1" class="btnOrtak" onclick="btn1Tiklandi(this)" />
+
+    <input type="button" value="Buton2" id="btn2" class="btnOrtak" onclick="btn2Tiklandi(this)" />
+    <script>
+        function btn1Tiklandi(btn) {
+            var digerBtn = document.getElementById("btn2");
+            digerBtn.classList.remove("ikinciBtn");
+            digerBtn.classList.add("tiklandiBtn");
+            //kendisini eski haine getirmeliyiz.
+            //NOT: eğer elementte birden cok class bulunuyorsa include metodu kullanılmalıdır.
+            if (btn.classList.value.includes('tiklandiBtn')) {
+                btn.classList.remove("tiklandiBtn");
+                btn.classList.add("birinciBtn");
+
+            }
+
+        } //btn1Tiklandi fonk. bitti.
+
+        function btn2Tiklandi(btn) {
+            var digerBtn = document.getElementById("btn1");
+            digerBtn.classList.remove("birinciBtn");
+            digerBtn.classList.add("tiklandiBtn");
+
+            if (btn.classList.value.includes('tiklandiBtn')) {
+                btn.classList.remove("tiklandiBtn");
+                btn.classList.add("ikinciBtn");
+
+            }
+
+
+
+        }//btn2Tiklandi fonk. bitti.
+
+    </script>
+
+</body>
+</html>
